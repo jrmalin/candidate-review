@@ -35,6 +35,35 @@ const SectionInfo = ({ infos }: { infos: KeyValuePair[] }) => {
   );
 };
 
+const Status = ({
+  status,
+  setActiveCandidate,
+}: {
+  status?: ReviewStatus;
+  setActiveCandidate?: () => void;
+}) => {
+  if (!setActiveCandidate) {
+    return null;
+  }
+
+  let color: "success" | "error" | "info";
+  if (status === ReviewStatus.APPROVED) {
+    color = "success";
+  } else if (status === ReviewStatus.REJECTED) {
+    color = "error";
+  } else {
+    color = "info";
+  }
+
+  return (
+    <Chip
+      label={`Status: ${status ?? ReviewStatus.PENDING}`}
+      color={color}
+      onClick={setActiveCandidate}
+    />
+  );
+};
+
 export const SingleCandidateOverview = ({
   candidate,
   setActiveCandidate,
@@ -42,29 +71,6 @@ export const SingleCandidateOverview = ({
   candidate: Candidate;
   setActiveCandidate?: () => void;
 }) => {
-  const Status = ({ status }: { status?: ReviewStatus }) => {
-    if (!setActiveCandidate) {
-      return null;
-    }
-
-    let color: "success" | "error" | "info";
-    if (status === ReviewStatus.APPROVED) {
-      color = "success";
-    } else if (status === ReviewStatus.REJECTED) {
-      color = "error";
-    } else {
-      color = "info";
-    }
-
-    return (
-      <Chip
-        label={`Status: ${status ?? ReviewStatus.PENDING}`}
-        color={color}
-        onClick={setActiveCandidate}
-      />
-    );
-  };
-
   return (
     <BorderWrapper data-testid="candidate-overview">
       <Grid container sx={gridStyle} spacing={1}>
@@ -97,7 +103,10 @@ export const SingleCandidateOverview = ({
           />
         </Grid>
       </Grid>
-      <Status status={candidate.status} />
+      <Status
+        status={candidate.status}
+        setActiveCandidate={setActiveCandidate}
+      />
     </BorderWrapper>
   );
 };
